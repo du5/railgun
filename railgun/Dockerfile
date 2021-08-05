@@ -17,7 +17,6 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 2408
-EXPOSE 9090
 
 CMD sed -i "s|YOUR_PUBLIC_IP_OR_HOSTNAME|$(curl -s ip.sb)|" /etc/railgun/railgun.conf \
     && sed -i "s|YOUR_TOKEN_HERE|${token}|" /etc/railgun/railgun.conf \
