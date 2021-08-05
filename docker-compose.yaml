@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+    memcached:
+        image: "memcached:alpine"
+        restart: always
+        container_name: memcached
+        # 限制内存使用 64m
+        entrypoint: 'memcached -m 64'
+    railgun:
+        image: "gtary/railgun"
+        restart: always
+        container_name: railgun
+        depends_on:
+            - memcached
+        environment:
+            - token=
+            - level=5
+        ports:
+            - 2408:2408
