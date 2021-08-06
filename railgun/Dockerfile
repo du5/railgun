@@ -2,7 +2,8 @@ FROM debian:stretch-slim
 
 ENV token=value \
     level=0 \
-    ip=value
+    ip=value \
+    host=value
 
 RUN apt-get update \
     && apt-get install curl gnupg2 -y \
@@ -19,9 +20,10 @@ RUN apt-get update \
 
 EXPOSE 2408
 
-CMD sed -i "s|YOUR_PUBLIC_IP_OR_HOSTNAME|${ip}|" /etc/railgun/railgun.conf \
+CMD sed -i "s|YOUR_PUBLIC_IP_OR_HOSTNAME|${host}|" /etc/railgun/railgun.conf \
     && sed -i "s|YOUR_TOKEN_HERE|${token}|" /etc/railgun/railgun.conf \
     && sed -i "s|log.level = 0|log.level = ${level}|" /etc/railgun/railgun.conf \
     && sed -i "s|/var/log/railgun/panic.log|/dev/stdout|" /etc/railgun/railgun.conf \
     && sed -i "s|memcached.servers = 127.0.0.1:11211|memcached.servers = memcached:11211|" /etc/railgun/railgun.conf \
+    && echo "default=${ip}" >> /etc/railgun/railgun-nat.conf \
     && /usr/bin/rg-listener -config=/etc/railgun/railgun.conf
