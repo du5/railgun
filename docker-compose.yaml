@@ -4,7 +4,7 @@ services:
         image: "memcached:alpine"
         restart: always
         container_name: memcached
-        # 限制内存使用 64m
+        # 限制内存使用 64m, 官方建议 64m ~ 2g
         entrypoint: 'memcached -m 64'
     railgun:
         image: "gtary/railgun"
