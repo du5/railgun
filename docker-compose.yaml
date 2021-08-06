@@ -13,6 +13,7 @@ services:
         depends_on:
             - memcached
         environment:
+            - ip=
             - token=
             - level=5
         ports:

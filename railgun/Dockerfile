@@ -1,7 +1,8 @@
 FROM debian:stretch-slim
 
 ENV token=value \
-    level=0
+    level=0 \
+    ip=value
 
 RUN apt-get update \
     && apt-get install curl gnupg2 -y \
@@ -11,15 +12,16 @@ RUN apt-get update \
     && apt-get update \
     && apt-get install railgun-stable -y \
     && ln -sf /dev/stdout /var/log/syslog \
-    && apt-get purge gnupg2 -y \
+    && apt-get purge curl gnupg2 -y \
     && apt-get autoremove -y  \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 2408
 
-CMD sed -i "s|YOUR_PUBLIC_IP_OR_HOSTNAME|$(curl -s ip.sb)|" /etc/railgun/railgun.conf \
+CMD sed -i "s|YOUR_PUBLIC_IP_OR_HOSTNAME|${ip}|" /etc/railgun/railgun.conf \
     && sed -i "s|YOUR_TOKEN_HERE|${token}|" /etc/railgun/railgun.conf \
+    && sed -i "s|log.level = 0|log.level = ${level}|" /etc/railgun/railgun.conf \
     && sed -i "s|/var/log/railgun/panic.log|/dev/stdout|" /etc/railgun/railgun.conf \
     && sed -i "s|memcached.servers = 127.0.0.1:11211|memcached.servers = memcached:11211|" /etc/railgun/railgun.conf \
     && /usr/bin/rg-listener -config=/etc/railgun/railgun.conf
